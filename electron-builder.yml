@@ -1,0 +1,11 @@
+appId: c2tsao.colorbg.demo
+productName: Color Background Demo
+directories:
+  output: dist
+  buildResources: resources
+files:
+  - from: .
+    filter:
+      - package.json
+      - app
+publish: null
