@@ -1,8 +1,10 @@
+import { RgbaColor } from 'react-colorful'
+
 export type ColorConfigType = {
   type: 'color'
   data: {
-    primary: [number, number, number, number]
-    secondary: [number, number, number, number]
+    primary: RgbaColor
+    secondary: RgbaColor
   }
 }
 
@@ -10,6 +12,7 @@ export type ImageConfigType = {
   type: 'image'
   data: {
     path: string
+    format: string
   }
 }
 
@@ -17,6 +20,7 @@ export type VideoConfigType = {
   type: 'video'
   data: {
     path: string
+    format: string
   }
 }
 

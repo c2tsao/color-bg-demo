@@ -15,6 +15,9 @@ const handler = {
   invoke<T>(channel: string): Promise<T> {
     return ipcRenderer.invoke(channel)
   },
+  sendSync<T>(channel: string, ...args: T[]) {
+    return ipcRenderer.sendSync(channel, ...args)
+  },
 }
 
 contextBridge.exposeInMainWorld('ipc', handler)

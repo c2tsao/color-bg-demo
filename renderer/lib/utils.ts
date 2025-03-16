@@ -1,14 +1,14 @@
-import { StoreType } from '../../../types/configStoreType'
+import { RgbaColor } from 'react-colorful'
 
-export function getRGBA(state: StoreType): string {
-  const config = state.map[state.activated]
-  if (config && config.type === 'color') {
-    const data = config.data
-    const r = data.primary[0] ?? 0
-    const g = data.primary[1] ?? 0
-    const b = data.primary[2] ?? 0
-    const a = data.primary[3] ?? 1
-    return `rgba(${r}, ${g}, ${b}, ${a})`
-  }
-  return 'rgba(0,0,0,1)'
+export function getStyleColorString(color: RgbaColor) {
+  const r = color.r
+  const g = color.g
+  const b = color.b
+  const a = color.a
+  return `rgba(${r}, ${g}, ${b}, ${a})`
+}
+
+export function getContrastColor(color: RgbaColor) {
+  const luma = (0.299 * color.r + 0.587 * color.g + 0.114 * color.b) / 255
+  return luma > 0.5 ? 'black' : 'white'
 }

@@ -9,7 +9,10 @@
 }
 
 @layer components {
-  .btn-blue {
-    @apply text-white font-bold px-4 py-2 rounded bg-blue-600 hover:bg-blue-500;
+  .btn-default {
+    @apply text-white font-bold px-4 py-2 rounded border border-stone-100 bg-stone-900 hover:bg-stone-700;
+  }
+  .mask {
+    @apply bg-black opacity-70;
   }
 }

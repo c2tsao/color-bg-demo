@@ -1,3 +1,3 @@
 export * from './createWindow'
-export * from './handleDialog'
+export * from './handleFilesIO'
 export * from './handleConfigStore'

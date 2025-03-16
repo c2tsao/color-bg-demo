@@ -1,7 +1,7 @@
 import path from 'path'
 import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'
-import { createWindow, initDialogHandlers, initConfigStoreHandler } from './helpers'
+import { createWindow, initFileIOHandlers, initConfigStoreHandler } from './helpers'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -16,7 +16,9 @@ if (isProd) {
 
   const mainWindow = createWindow('main', {
     width: 1000,
+    minWidth: 750,
     height: 600,
+    minHeight: 500,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -40,5 +42,5 @@ app.on('window-all-closed', () => {
   app.quit()
 })
 
-initDialogHandlers()
+initFileIOHandlers(app)
 initConfigStoreHandler()

@@ -1,37 +1,46 @@
 import React from 'react'
 import { useStore } from '../hooks/useStore'
 
-function ControlPanel() {
+type PropsType = {
+  openModal: () => void
+  setConfigType: (type: 'color' | 'media') => void
+}
+
+function ControlPanel(props: PropsType) {
   const { state, dispatch } = useStore()
 
+  // list and select data
+  const keys = Object.keys(state.map)
   return (
-    <>
+    <div className="flex justify-center w-full relative py-4">
       <button
-        className="btn-blue"
+        className="btn-default mx-1"
         onClick={() => {
-          dispatch({ type: 'increment' })
+          props.setConfigType('color')
+          props.openModal()
         }}
       >
-        increment
+        Add color
       </button>
       <button
-        className="btn-blue"
+        className="btn-default mx-1"
         onClick={() => {
-          dispatch({ type: 'decrement' })
+          props.setConfigType('media')
+          props.openModal()
         }}
       >
-        decrement
+        Add Media
       </button>
-
       <button
-        className="btn-blue"
+        className="btn-default mx-1"
+        disabled={keys.length <= 1}
         onClick={() => {
-          window.ipc.invoke('dialog:openFile')
+          dispatch({ type: 'remove', payload: { ...state, activated: keys[0] } })
         }}
       >
-        open file
+        delete
       </button>
-    </>
+    </div>
   )
 }
 

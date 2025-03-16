@@ -6,8 +6,8 @@ type ActionType = { type: string; payload?: StoreType }
 const defaultState: StoreType = {
   activated: '',
   map: {
-    '0': { type: 'color', data: { primary: [255, 0, 0, 1], secondary: [255, 0, 0, 1] } },
-    '1': { type: 'color', data: { primary: [0, 255, 0, 1], secondary: [0, 255, 0, 1] } },
+    '0': { type: 'color', data: { primary: { r: 255, g: 0, b: 0, a: 1 }, secondary: { r: 255, g: 0, b: 0, a: 1 } } },
+    '1': { type: 'color', data: { primary: { r: 0, g: 255, b: 0, a: 1 }, secondary: { r: 0, g: 255, b: 0, a: 1 } } },
   },
 }
 const StoreContext = createContext<{
@@ -24,6 +24,18 @@ const reducer = (state: StoreType, action: ActionType) => {
       return {
         activated: action.payload?.activated ?? defaultState.activated,
         map: { ...(action.payload?.map ?? defaultState.map) },
+      }
+    case 'update':
+      return {
+        activated: action.payload?.activated ?? state.activated,
+        map: { ...(action.payload?.map ?? state.map) },
+      }
+    case 'remove':
+      delete state.map[action.payload?.activated ?? '']
+      const key = Object.keys(state.map)[0]
+      return {
+        activated: key,
+        map: { ...state.map },
       }
     case 'increment':
       return { ...state, activated: `${+state.activated + 1}` }
