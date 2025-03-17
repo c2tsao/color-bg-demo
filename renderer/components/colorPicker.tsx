@@ -30,7 +30,7 @@ function ColorPicker(props: Props) {
           backgroundColor: `rgba(${primaryColor.r}, ${primaryColor.g}, ${primaryColor.b}, ${primaryColor.a})`,
         }}
       >
-        Primary
+        {'Primary'}
       </div>
       <div
         className="row-start-4 flex items-center justify-center"
@@ -39,7 +39,7 @@ function ColorPicker(props: Props) {
           backgroundColor: `rgba(${secondaryColor.r}, ${secondaryColor.g}, ${secondaryColor.b}, ${secondaryColor.a})`,
         }}
       >
-        Secondary
+        {'Secondary'}
       </div>
     </div>
   )

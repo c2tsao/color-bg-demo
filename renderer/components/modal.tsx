@@ -3,6 +3,7 @@ import { RgbaColor } from 'react-colorful'
 import ColorPicker from './colorPicker'
 import { useStore } from '../hooks/useStore'
 import { StoreType } from '../../types/configStoreType'
+import { IPC_FILE_IO_OPEN_DIALOG } from '../../constants/ipc'
 
 type PropsType = {
   isModalOpen: boolean
@@ -14,21 +15,19 @@ function Modal(props: PropsType) {
   const { state, dispatch } = useStore()
   const [primaryColor, setPrimaryColor] = React.useState<RgbaColor>({ r: 3, g: 76, b: 83, a: 1 })
   const [secondaryColor, setSecondaryColor] = React.useState<RgbaColor>({ r: 243, g: 140, b: 121, a: 1 })
+  const [fileUploadError, setFileUploadError] = React.useState<'sizeLimit' | undefined>()
+
+  React.useEffect(() => {
+    if (!props.isModalOpen) {
+      setFileUploadError(undefined)
+    }
+  }, [props.isModalOpen])
 
   if (!props.isModalOpen) {
     return <></>
   }
 
-  let content = (
-    <ColorPicker
-      primaryColor={primaryColor}
-      secondaryColor={secondaryColor}
-      setPrimaryColor={setPrimaryColor}
-      setSecondaryColor={setSecondaryColor}
-    ></ColorPicker>
-  )
-  let headerText = 'Select Color'
-  let onSave = () => {
+  const onSave = () => {
     const id = `${new Date().valueOf()}`
     const newState: StoreType = {
       activated: id,
@@ -40,36 +39,56 @@ function Modal(props: PropsType) {
     dispatch({ type: 'update', payload: newState })
     props.closeModal()
   }
+
+  const openFile = async () => {
+    setFileUploadError(undefined)
+    const file = await window.ipc.invoke<
+      | { error: 'sizeLimit' }
+      | { error: false; filepath: string; id: string; type: 'image' | 'video'; format: string }
+      | undefined
+    >(IPC_FILE_IO_OPEN_DIALOG)
+    if (file === undefined) return
+    if (file.error === 'sizeLimit') {
+      setFileUploadError('sizeLimit')
+      return
+    }
+    const newState: StoreType = {
+      activated: file.id,
+      map: {
+        ...state.map,
+        [file.id]: { type: file.type, data: { path: file.filepath, format: file.format } },
+      },
+    }
+    dispatch({ type: 'update', payload: newState })
+    props.closeModal()
+  }
+
+  console.log('123', fileUploadError)
+  let content = (
+    <ColorPicker
+      primaryColor={primaryColor}
+      secondaryColor={secondaryColor}
+      setPrimaryColor={setPrimaryColor}
+      setSecondaryColor={setSecondaryColor}
+    ></ColorPicker>
+  )
+  let headerText = 'Select Color'
   let saveButton = (
     <button className="btn-default h-1/6" onClick={onSave}>
-      Add & Apply
+      {'Add & Apply'}
     </button>
   )
-
   if (props.type === 'media') {
-    const openFile = async () => {
-      const file = await window.ipc.invoke<
-        { filepath: string; id: string; type: 'image' | 'video'; format: string } | undefined
-      >('dialog:openFile')
-      if (file === undefined) return
-      const newState: StoreType = {
-        activated: file.id,
-        map: {
-          ...state.map,
-          [file.id]: { type: file.type, data: { path: file.filepath, format: file.format } },
-        },
-      }
-      dispatch({ type: 'update', payload: newState })
-      props.closeModal()
-    }
     content = (
       <div
-        className="cursor-pointer flex flex-col justify-center items-center w-full h-5/6 pb-4 border border-2 border-dashed border-stone-700 rounded"
+        className={`cursor-pointer flex flex-col justify-center items-center w-full h-5/6 pb-4 border border-2 border-dashed ${fileUploadError !== undefined ? 'text-red-500' : 'text-stone-700'} rounded`}
         onClick={openFile}
       >
-        <div className="text-xl text-stone-700 px-10 py-10 tracking-wider">Click To Upload</div>
-        <div className="text-sm text-stone-500">Max file size: 5 MB</div>
-        <div className="text-sm text-stone-500">File types: JPG, PNG, GIF, MP4, AVI, MKV</div>
+        <div className="text-xl text-stone-700 px-10 py-10 tracking-wider">{'Click To Upload'}</div>
+        <div className={`text-sm ${fileUploadError === 'sizeLimit' ? 'text-red-500' : 'text-stone-500'}`}>
+          {'Max file size: 10 MB'}
+        </div>
+        <div className="text-sm text-stone-500">{'File types: JPG, PNG, GIF, MP4, AVI, MKV'}</div>
       </div>
     )
     headerText = 'Upload Media'

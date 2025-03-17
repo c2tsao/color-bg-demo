@@ -6,6 +6,12 @@ import { StoreType } from '../../types/configStoreType'
 import ControlPanel from '../components/controlPanel'
 import Modal from '../components/modal'
 import Gallery from '../components/gallery'
+import {
+  IPC_CONFIG_STORE_GET,
+  IPC_CONFIG_STORE_SET,
+  IPC_FILE_IO_READ_FILE,
+  IPC_WINDOW_READY_TO_SHOW,
+} from '../../constants/ipc'
 
 let imageUrl = ''
 let videoUrl = ''
@@ -17,10 +23,10 @@ export default function HomePage() {
 
   React.useEffect(() => {
     async function runEffect() {
-      const config = await window.ipc.invoke<StoreType>('configStore:get')
+      const config = await window.ipc.invoke<StoreType>(IPC_CONFIG_STORE_GET)
       dispatch({ type: 'init', payload: config })
       setInitialized(true)
-      window.ipc.invoke('ready-to-show')
+      window.ipc.invoke(IPC_WINDOW_READY_TO_SHOW)
     }
     runEffect()
     return () => {
@@ -31,12 +37,12 @@ export default function HomePage() {
 
   React.useEffect(() => {
     if (initialized) {
-      window.ipc.send('configStore:set', {
+      window.ipc.send(IPC_CONFIG_STORE_SET, {
         activated: `${state.activated}`,
         map: state.map,
       })
     }
-  }, [state.activated])
+  }, [state])
 
   const closeModal = () => {
     setModalOpen(false)
@@ -49,8 +55,9 @@ export default function HomePage() {
   let style = {}
   let buttonStyle = <></>
   const activatedItem = state.map[state.activated] ?? {}
+
   if (activatedItem.type === 'image') {
-    const buffer = window.ipc.sendSync('readfile', activatedItem.data.path)
+    const buffer = window.ipc.sendSync(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
     const image = new Blob([buffer], { type: activatedItem.data.format })
     URL.revokeObjectURL(imageUrl)
     imageUrl = URL.createObjectURL(image)
@@ -58,12 +65,14 @@ export default function HomePage() {
       backgroundImage: `url("${imageUrl}")`,
     }
   }
+
   if (activatedItem.type === 'video') {
-    const buffer = window.ipc.sendSync('readfile', activatedItem.data.path)
+    const buffer = window.ipc.sendSync(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
     const video = new Blob([buffer], { type: activatedItem.data.format })
     URL.revokeObjectURL(videoUrl)
     videoUrl = URL.createObjectURL(video)
   }
+
   if (activatedItem.type === 'color') {
     URL.revokeObjectURL(videoUrl)
     URL.revokeObjectURL(imageUrl)

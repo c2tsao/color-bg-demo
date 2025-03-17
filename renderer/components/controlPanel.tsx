@@ -7,9 +7,8 @@ type PropsType = {
 }
 
 function ControlPanel(props: PropsType) {
-  const { state, dispatch } = useStore()
+  const { state } = useStore()
 
-  // list and select data
   const keys = Object.keys(state.map)
   return (
     <div className="flex justify-center w-full relative py-4">
@@ -20,7 +19,7 @@ function ControlPanel(props: PropsType) {
           props.openModal()
         }}
       >
-        Add color
+        {'Add Color'}
       </button>
       <button
         className="btn-default mx-1"
@@ -29,16 +28,7 @@ function ControlPanel(props: PropsType) {
           props.openModal()
         }}
       >
-        Add Media
-      </button>
-      <button
-        className="btn-default mx-1"
-        disabled={keys.length <= 1}
-        onClick={() => {
-          dispatch({ type: 'remove', payload: { ...state, activated: keys[0] } })
-        }}
-      >
-        delete
+        {'Add Media'}
       </button>
     </div>
   )

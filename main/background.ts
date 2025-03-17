@@ -2,6 +2,7 @@ import path from 'path'
 import { app, ipcMain } from 'electron'
 import serve from 'electron-serve'
 import { createWindow, initFileIOHandlers, initConfigStoreHandler } from './helpers'
+import { IPC_WINDOW_READY_TO_SHOW } from '../constants/ipc'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -33,7 +34,7 @@ if (isProd) {
     mainWindow.webContents.openDevTools()
   }
 
-  ipcMain.handle('ready-to-show', () => {
+  ipcMain.handle(IPC_WINDOW_READY_TO_SHOW, () => {
     mainWindow.show()
   })
 })()
