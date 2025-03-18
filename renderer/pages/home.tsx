@@ -2,7 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import { useStore } from '../hooks/useStore'
 import { getContrastColor, getStyleColorString } from '../lib/utils'
-import { StoreType } from '../../types/configStoreType'
+import { StoreType, SourceType } from '../../types/configStoreType'
 import ControlPanel from '../components/controlPanel'
 import Modal from '../components/modal'
 import Gallery from '../components/gallery'
@@ -19,7 +19,7 @@ export default function HomePage() {
   const { state, dispatch } = useStore()
   const [initialized, setInitialized] = React.useState(false)
   const [isModalOpen, setModalOpen] = React.useState(false)
-  const [configType, setConfigType] = React.useState<'color' | 'media'>('color')
+  const [configType, setConfigType] = React.useState<SourceType>('color')
 
   React.useEffect(() => {
     async function runEffect() {

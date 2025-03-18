@@ -1,5 +1,8 @@
 import { RgbaColor } from 'react-colorful'
 
+export type SourceType = 'color' | 'media'
+export type MediaType = 'image' | 'video'
+
 export type ColorConfigType = {
   type: 'color'
   data: {
