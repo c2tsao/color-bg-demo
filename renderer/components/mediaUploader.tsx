@@ -44,7 +44,7 @@ function MediaUploader(props: Props) {
   }
   return (
     <div
-      className={`cursor-pointer flex flex-col justify-center items-center w-full h-5/6 pb-4 border border-2 border-dashed ${fileUploadError !== undefined ? 'text-red-500' : 'text-stone-700'} rounded`}
+      className={`cursor-pointer flex flex-col justify-center items-center w-full h-5/6 pb-4 border border-2 border-dashed ${fileUploadError !== undefined ? 'border-red-500' : 'border-stone-700'} rounded`}
       onClick={openFile}
     >
       <div className="text-xl text-stone-700 px-10 py-10 tracking-wider">{'Click To Upload'}</div>
