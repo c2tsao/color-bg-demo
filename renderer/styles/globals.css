@@ -6,6 +6,9 @@
   body {
     @apply bg-black text-white;
   }
+  button {
+    @apply hover:opacity-90;
+  }
 }
 
 @layer components {
