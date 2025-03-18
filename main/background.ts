@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, shell } from 'electron'
 import serve from 'electron-serve'
 import { createWindow, initFileIOHandlers, initConfigStoreHandler } from './helpers'
 import { IPC_WINDOW_READY_TO_SHOW } from '../constants/ipc'
@@ -41,6 +41,10 @@ if (isProd) {
 
 app.on('window-all-closed', () => {
   app.quit()
+})
+
+ipcMain.handle('openLink', () => {
+  shell.openExternal('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 })
 
 initFileIOHandlers(app)

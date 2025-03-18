@@ -13,17 +13,19 @@
 
 @layer components {
   .btn-default {
-    @apply text-white font-bold px-4 py-2 rounded border border-stone-100 bg-stone-900 hover:bg-stone-700;
+    @apply text-white font-normal px-4 py-2 rounded border border-stone-100 bg-stone-900 hover:bg-stone-700;
   }
   .mask {
     @apply bg-black opacity-70;
+  }
+  .dont-click-me {
+    @apply hover:opacity-90 flex justify-center items-center absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full cursor-pointer;
   }
 }
 
 .mask-bg {
   background-color: rgba(0, 0, 0, 0.7);
 }
-
 .modal-enter {
   opacity: 0;
 }

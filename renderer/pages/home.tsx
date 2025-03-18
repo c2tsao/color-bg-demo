@@ -20,6 +20,7 @@ export default function HomePage() {
   const [initialized, setInitialized] = React.useState(false)
   const [isModalOpen, setModalOpen] = React.useState(false)
   const [configType, setConfigType] = React.useState<SourceType>('color')
+  const [dirty, setDirty] = React.useState(false)
 
   React.useEffect(() => {
     async function runEffect() {
@@ -52,7 +53,8 @@ export default function HomePage() {
     setModalOpen(true)
   }
 
-  let style = {}
+  let primaryStyle = {}
+  let secondaryStyle = {}
   let buttonStyle = <></>
   const activatedItem = state.map[state.activated] ?? {}
   const len = Object.keys(state.map).length
@@ -63,7 +65,7 @@ export default function HomePage() {
     const image = new Blob([buffer], { type: activatedItem.data.format })
     URL.revokeObjectURL(imageUrl)
     imageUrl = URL.createObjectURL(image)
-    style = {
+    primaryStyle = {
       backgroundImage: `url("${imageUrl}")`,
     }
   }
@@ -78,8 +80,12 @@ export default function HomePage() {
   if (activatedItem.type === 'color') {
     URL.revokeObjectURL(videoUrl)
     URL.revokeObjectURL(imageUrl)
-    style = {
+    primaryStyle = {
       backgroundColor: getStyleColorString(activatedItem.data.primary),
+    }
+    secondaryStyle = {
+      backgroundColor: getStyleColorString(activatedItem.data.secondary),
+      color: getContrastColor(activatedItem.data.secondary),
     }
     buttonStyle = (
       <style>
@@ -99,7 +105,7 @@ export default function HomePage() {
         <title>Color Background Demo</title>
         {buttonStyle}
       </Head>
-      <div className="w-screen h-screen transition bg-cover" style={style}>
+      <div className="w-screen h-screen transition bg-cover" style={primaryStyle}>
         {activatedItem.type === 'video' && (
           <video autoPlay muted loop className="absolute object-cover w-full h-full">
             <source src={videoUrl} type={activatedItem.data.format} />
@@ -111,6 +117,16 @@ export default function HomePage() {
           disabled={disabled}
           maxItemCounts={maxItemCounts}
         ></ControlPanel>
+        <div
+          className="dont-click-me w-[150px] h-[50px]"
+          style={secondaryStyle}
+          onClick={async () => {
+            setDirty(true)
+            await window.ipc.invoke('openLink')
+          }}
+        >
+          <span className="font-medium tracking-wider">{dirty ? '(˵ ¬ᴗ¬˵)' : "Don't Click Me"}</span>
+        </div>
         <Gallery></Gallery>
       </div>
       <Modal type={configType} isModalOpen={isModalOpen} closeModal={closeModal}></Modal>

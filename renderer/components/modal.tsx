@@ -81,7 +81,7 @@ function Modal(props: PropsType) {
     <CSSTransition classNames="modal" unmountOnExit nodeRef={nodeRef} in={props.isModalOpen} timeout={200}>
       <div className="w-screen h-screen absolute top-0" ref={nodeRef}>
         <div className="w-screen h-screen absolute top-0 mask" onClick={props.closeModal}></div>
-        <div className="relative flex flex-col bg-gray-100 text-black px-4 py-4 w-3/4 h-2/3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border rounded">
+        <div className="flex flex-col bg-gray-100 text-black px-4 py-4 w-3/4 h-2/3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border rounded">
           <button className="absolute top-2 right-2 rounded-full w-6 h-6" onClick={props.closeModal}>
             &#x2715;
           </button>
