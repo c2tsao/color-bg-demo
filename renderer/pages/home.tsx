@@ -125,7 +125,7 @@ export default function HomePage() {
             await window.ipc.invoke('openLink')
           }}
         >
-          <span className="font-medium tracking-wider">{dirty ? '(˵ ¬ᴗ¬˵)' : "Don't Click Me"}</span>
+          <span className="font-medium tracking-wider">{dirty ? '(˵ ¬ᴗ¬˵) HEH' : "Don't Click Me"}</span>
         </div>
         <Gallery></Gallery>
       </div>
