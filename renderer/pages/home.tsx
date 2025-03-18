@@ -55,7 +55,9 @@ export default function HomePage() {
   let style = {}
   let buttonStyle = <></>
   const activatedItem = state.map[state.activated] ?? {}
-
+  const len = Object.keys(state.map).length
+  const maxItemCounts = 6
+  const disabled = len >= maxItemCounts
   if (activatedItem.type === 'image') {
     const buffer = window.ipc.sendSync<string, Buffer<ArrayBufferLike>>(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
     const image = new Blob([buffer], { type: activatedItem.data.format })
@@ -92,7 +94,7 @@ export default function HomePage() {
   }
 
   return (
-    <React.Fragment>
+    <>
       <Head>
         <title>Color Background Demo</title>
         {buttonStyle}
@@ -103,10 +105,15 @@ export default function HomePage() {
             <source src={videoUrl} type={activatedItem.data.format} />
           </video>
         )}
-        <ControlPanel openModal={openModal} setConfigType={setConfigType}></ControlPanel>
+        <ControlPanel
+          openModal={openModal}
+          setConfigType={setConfigType}
+          disabled={disabled}
+          maxItemCounts={maxItemCounts}
+        ></ControlPanel>
         <Gallery></Gallery>
       </div>
       <Modal type={configType} isModalOpen={isModalOpen} closeModal={closeModal}></Modal>
-    </React.Fragment>
+    </>
   )
 }

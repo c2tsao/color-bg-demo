@@ -1,5 +1,6 @@
 import React from 'react'
 import { RgbaColor } from 'react-colorful'
+import { CSSTransition } from 'react-transition-group'
 import { useStore } from '../hooks/useStore'
 import { SourceType, StoreType } from '../../types/configStoreType'
 import { FileUploadErrorType } from '../../types/errorType'
@@ -18,16 +19,23 @@ function Modal(props: PropsType) {
   const [primaryColor, setPrimaryColor] = React.useState<RgbaColor>({ r: 3, g: 76, b: 83, a: 1 })
   const [secondaryColor, setSecondaryColor] = React.useState<RgbaColor>({ r: 243, g: 140, b: 121, a: 1 })
   const [fileUploadError, setFileUploadError] = React.useState<FileUploadErrorType | undefined>()
+  const nodeRef = React.useRef(null)
+
+  React.useEffect(() => {
+    const close = e => {
+      if (e.keyCode === 27) {
+        props.closeModal()
+      }
+    }
+    window.addEventListener('keydown', close)
+    return () => window.removeEventListener('keydown', close)
+  }, [])
 
   React.useEffect(() => {
     if (!props.isModalOpen) {
       setFileUploadError(undefined)
     }
   }, [props.isModalOpen])
-
-  if (!props.isModalOpen) {
-    return <></>
-  }
 
   const onSave = () => {
     const id = `${new Date().valueOf()}`
@@ -70,17 +78,19 @@ function Modal(props: PropsType) {
   }
 
   return (
-    <div className="w-screen h-screen absolute top-0">
-      <div className="w-screen h-screen absolute top-0 mask" onClick={props.closeModal}></div>
-      <div className="relative flex flex-col bg-gray-100 text-black px-4 py-4 w-3/4 h-2/3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border rounded">
-        <button className="absolute top-2 right-2 rounded-full w-6 h-6" onClick={props.closeModal}>
-          &#x2715;
-        </button>
-        <h2 className="text-2xl pb-4">{headerText}</h2>
-        {content}
-        {saveButton}
+    <CSSTransition classNames="modal" unmountOnExit nodeRef={nodeRef} in={props.isModalOpen} timeout={200}>
+      <div className="w-screen h-screen absolute top-0" ref={nodeRef}>
+        <div className="w-screen h-screen absolute top-0 mask" onClick={props.closeModal}></div>
+        <div className="relative flex flex-col bg-gray-100 text-black px-4 py-4 w-3/4 h-2/3 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border rounded">
+          <button className="absolute top-2 right-2 rounded-full w-6 h-6" onClick={props.closeModal}>
+            &#x2715;
+          </button>
+          <h2 className="text-2xl pb-4">{headerText}</h2>
+          {content}
+          {saveButton}
+        </div>
       </div>
-    </div>
+    </CSSTransition>
   )
 }
 

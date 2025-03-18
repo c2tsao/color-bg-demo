@@ -7,7 +7,7 @@
     @apply bg-black text-white;
   }
   button {
-    @apply hover:opacity-90;
+    @apply transition hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed;
   }
 }
 
@@ -18,4 +18,23 @@
   .mask {
     @apply bg-black opacity-70;
   }
+}
+
+.mask-bg {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-enter {
+  opacity: 0;
+}
+.modal-enter-active {
+  opacity: 1;
+  transition: opacity 300ms;
+}
+.modal-exit {
+  opacity: 1;
+}
+.modal-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
 }
