@@ -1,21 +1,23 @@
 import React from 'react'
 import { RgbaColor } from 'react-colorful'
-import ColorPicker from './colorPicker'
 import { useStore } from '../hooks/useStore'
-import { StoreType } from '../../types/configStoreType'
-import { IPC_FILE_IO_OPEN_DIALOG } from '../../constants/ipc'
+import { SourceType, StoreType } from '../../types/configStoreType'
+import { FileUploadErrorType } from '../../types/errorType'
+
+import ColorPicker from './colorPicker'
+import MediaUploader from './mediaUploader'
 
 type PropsType = {
   isModalOpen: boolean
   closeModal: () => void
-  type: 'color' | 'media'
+  type: SourceType
 }
 
 function Modal(props: PropsType) {
   const { state, dispatch } = useStore()
   const [primaryColor, setPrimaryColor] = React.useState<RgbaColor>({ r: 3, g: 76, b: 83, a: 1 })
   const [secondaryColor, setSecondaryColor] = React.useState<RgbaColor>({ r: 243, g: 140, b: 121, a: 1 })
-  const [fileUploadError, setFileUploadError] = React.useState<'sizeLimit' | undefined>()
+  const [fileUploadError, setFileUploadError] = React.useState<FileUploadErrorType | undefined>()
 
   React.useEffect(() => {
     if (!props.isModalOpen) {
@@ -40,30 +42,6 @@ function Modal(props: PropsType) {
     props.closeModal()
   }
 
-  const openFile = async () => {
-    setFileUploadError(undefined)
-    const file = await window.ipc.invoke<
-      | { error: 'sizeLimit' }
-      | { error: false; filepath: string; id: string; type: 'image' | 'video'; format: string }
-      | undefined
-    >(IPC_FILE_IO_OPEN_DIALOG)
-    if (file === undefined) return
-    if (file.error === 'sizeLimit') {
-      setFileUploadError('sizeLimit')
-      return
-    }
-    const newState: StoreType = {
-      activated: file.id,
-      map: {
-        ...state.map,
-        [file.id]: { type: file.type, data: { path: file.filepath, format: file.format } },
-      },
-    }
-    dispatch({ type: 'update', payload: newState })
-    props.closeModal()
-  }
-
-  console.log('123', fileUploadError)
   let content = (
     <ColorPicker
       primaryColor={primaryColor}
@@ -78,18 +56,14 @@ function Modal(props: PropsType) {
       {'Add & Apply'}
     </button>
   )
+
   if (props.type === 'media') {
     content = (
-      <div
-        className={`cursor-pointer flex flex-col justify-center items-center w-full h-5/6 pb-4 border border-2 border-dashed ${fileUploadError !== undefined ? 'text-red-500' : 'text-stone-700'} rounded`}
-        onClick={openFile}
-      >
-        <div className="text-xl text-stone-700 px-10 py-10 tracking-wider">{'Click To Upload'}</div>
-        <div className={`text-sm ${fileUploadError === 'sizeLimit' ? 'text-red-500' : 'text-stone-500'}`}>
-          {'Max file size: 10 MB'}
-        </div>
-        <div className="text-sm text-stone-500">{'File types: JPG, PNG, GIF, MP4, AVI, MKV'}</div>
-      </div>
+      <MediaUploader
+        closeModal={props.closeModal}
+        fileUploadError={fileUploadError}
+        setFileUploadError={setFileUploadError}
+      ></MediaUploader>
     )
     headerText = 'Upload Media'
     saveButton = <></>

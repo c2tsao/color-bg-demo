@@ -7,9 +7,10 @@ import {
   IPC_FILE_IO_READ_APP_DATA_FILE,
   IPC_FILE_IO_READ_FILE,
 } from '../../constants/ipc'
+import { FILE_SIZE_LIMIT } from '../../constants/error'
 
 export function initFileIOHandlers(app: Electron.App) {
-  async function handleFileOpen() {
+  async function handleFileOpen(event: Electron.IpcMainEvent, fileLimitMegabytes: number) {
     const imageExts = ['jpg', 'png', 'gif']
     const videoExts = ['mkv', 'avi', 'mp4']
     const { canceled, filePaths } = await dialog.showOpenDialog({
@@ -25,10 +26,11 @@ export function initFileIOHandlers(app: Electron.App) {
       const fileSizeInBytes = stats.size
       const fileSizeInMegabytes = fileSizeInBytes / (1024 * 1024)
       console.log(fileSizeInMegabytes)
-      if (fileSizeInMegabytes > 1) {
-        return {
-          error: 'sizeLimit',
+      if (fileSizeInMegabytes > fileLimitMegabytes) {
+        event.returnValue = {
+          error: FILE_SIZE_LIMIT,
         }
+        return
       }
 
       const mediaPath = path.join(app.getPath('userData'), '\/media')
@@ -41,15 +43,16 @@ export function initFileIOHandlers(app: Electron.App) {
       fs.cpSync(filePaths[0], newFilePath)
 
       const type = videoExts.includes(ext.substring(1)) ? 'video' : 'image'
-      return {
+      event.returnValue = {
         error: false,
         filepath: newFilePath,
         id,
         type,
         format: `${type}/${ext.substring(1)}`,
       }
+      return
     }
-    return undefined
+    event.returnValue = undefined
   }
 
   async function readAppDataFile(filepath: string) {
@@ -58,7 +61,7 @@ export function initFileIOHandlers(app: Electron.App) {
     return data
   }
 
-  ipcMain.handle(IPC_FILE_IO_OPEN_DIALOG, handleFileOpen)
+  ipcMain.on(IPC_FILE_IO_OPEN_DIALOG, handleFileOpen)
   ipcMain.handle(IPC_FILE_IO_GET_APP_DATA_PATH, () => {
     return app.getPath('userData')
   })

@@ -57,7 +57,7 @@ export default function HomePage() {
   const activatedItem = state.map[state.activated] ?? {}
 
   if (activatedItem.type === 'image') {
-    const buffer = window.ipc.sendSync(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
+    const buffer = window.ipc.sendSync<string, Buffer<ArrayBufferLike>>(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
     const image = new Blob([buffer], { type: activatedItem.data.format })
     URL.revokeObjectURL(imageUrl)
     imageUrl = URL.createObjectURL(image)
@@ -67,7 +67,7 @@ export default function HomePage() {
   }
 
   if (activatedItem.type === 'video') {
-    const buffer = window.ipc.sendSync(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
+    const buffer = window.ipc.sendSync<string, Buffer<ArrayBufferLike>>(IPC_FILE_IO_READ_FILE, activatedItem.data.path)
     const video = new Blob([buffer], { type: activatedItem.data.format })
     URL.revokeObjectURL(videoUrl)
     videoUrl = URL.createObjectURL(video)
