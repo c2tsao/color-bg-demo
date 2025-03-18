@@ -1,36 +1,41 @@
 import React from 'react'
-import { useStore } from '../hooks/useStore'
 
 type PropsType = {
   openModal: () => void
   setConfigType: (type: 'color' | 'media') => void
+  disabled: boolean
+  maxItemCounts: number
 }
 
 function ControlPanel(props: PropsType) {
-  const { state } = useStore()
-
-  const keys = Object.keys(state.map)
   return (
-    <div className="flex justify-center w-full relative py-4">
-      <button
-        className="btn-default mx-1"
-        onClick={() => {
-          props.setConfigType('color')
-          props.openModal()
-        }}
-      >
-        {'Add Color'}
-      </button>
-      <button
-        className="btn-default mx-1"
-        onClick={() => {
-          props.setConfigType('media')
-          props.openModal()
-        }}
-      >
-        {'Add Media'}
-      </button>
-    </div>
+    <>
+      <p className="text-center" style={{ visibility: props.disabled ? 'visible' : 'hidden' }}>
+        <span className="text-sm inline-block mask-bg px-2 rounded">{`Hint: Max ${props.maxItemCounts} Items`}</span>
+      </p>
+      <div className="flex justify-center w-full relative pt-1 pb-4">
+        <button
+          className="btn-default mx-1"
+          onClick={() => {
+            props.setConfigType('color')
+            props.openModal()
+          }}
+          disabled={props.disabled}
+        >
+          {'Add Color'}
+        </button>
+        <button
+          className="btn-default mx-1"
+          onClick={() => {
+            props.setConfigType('media')
+            props.openModal()
+          }}
+          disabled={props.disabled}
+        >
+          {'Add Media'}
+        </button>
+      </div>
+    </>
   )
 }
 

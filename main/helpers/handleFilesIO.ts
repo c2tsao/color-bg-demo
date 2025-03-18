@@ -11,7 +11,7 @@ import { FILE_SIZE_LIMIT } from '../../constants/error'
 
 export function initFileIOHandlers(app: Electron.App) {
   async function handleFileOpen(event: Electron.IpcMainEvent, fileLimitMegabytes: number) {
-    const imageExts = ['jpg', 'png', 'gif']
+    const imageExts = ['jpeg', 'jpg', 'png', 'gif']
     const videoExts = ['mkv', 'avi', 'mp4']
     const { canceled, filePaths } = await dialog.showOpenDialog({
       filters: [
@@ -37,7 +37,7 @@ export function initFileIOHandlers(app: Electron.App) {
       if (!fs.existsSync(mediaPath)) {
         fs.mkdirSync(mediaPath)
       }
-      const id = new Date().valueOf()
+      const id = `${new Date().valueOf()}`
       const ext = path.extname(filePaths[0])
       const newFilePath = path.join(mediaPath, `${id}${ext}`)
       fs.cpSync(filePaths[0], newFilePath)

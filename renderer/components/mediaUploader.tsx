@@ -49,7 +49,7 @@ function MediaUploader(props: Props) {
     >
       <div className="text-xl text-stone-700 px-10 py-10 tracking-wider">{'Click To Upload'}</div>
       <div className={`text-sm ${fileUploadError === FILE_SIZE_LIMIT ? 'text-red-500' : 'text-stone-500'}`}>
-        {'Max file size: 10 MB'}
+        {`Max file size: ${fileLimitMegabytes} MB`}
       </div>
       <div className="text-sm text-stone-500">{'File types: JPG, PNG, GIF, MP4, AVI, MKV'}</div>
     </div>
