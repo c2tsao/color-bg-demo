@@ -21,6 +21,7 @@ if (isProd) {
     height: 600,
     minHeight: 500,
     show: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
