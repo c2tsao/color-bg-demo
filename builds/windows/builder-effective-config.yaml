@@ -1,0 +1,11 @@
+directories:
+  output: dist
+  buildResources: resources
+appId: c2tsao.colorbg.demo
+productName: Color Background Demo
+files:
+  - filter:
+      - package.json
+      - app
+publish: null
+electronVersion: 34.3.3
