@@ -118,14 +118,14 @@ export default function HomePage() {
           maxItemCounts={maxItemCounts}
         ></ControlPanel>
         <div
-          className="dont-click-me w-[150px] h-[50px]"
+          className="dont-click-me btn-default w-[150px] h-[50px]"
           style={secondaryStyle}
           onClick={async () => {
             setDirty(true)
             await window.ipc.invoke('openLink')
           }}
         >
-          <span className="font-medium tracking-wider">{dirty ? '(˵ ¬ᴗ¬˵) HEH' : "Don't Click Me"}</span>
+          <span className="font-medium tracking-wider">{dirty ? '(˵ ¬ᴗ¬˵) HEH' : 'Hello!'}</span>
         </div>
         <Gallery></Gallery>
       </div>
